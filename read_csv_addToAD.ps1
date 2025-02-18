@@ -18,13 +18,10 @@ if ([System.IO.File]::Exists($CSVFile)) {
 try {
 # Lets iterate over each line in the CSV file
   foreach($user in $CSV) {
-
       # Password
       $SecurePassword = ConvertTo-SecureString "$user.'Password'" -AsPlainText -Force
-
       # Format their username
       $Username = $user.'Username'
-
       # Create new user
       New-ADUser -Name "$($user.'FirstName') $($user.'LastName')" `
                   -GivenName $user.'FirstName' `
@@ -42,6 +39,7 @@ try {
 
   Read-Host -Prompt "Script complete... Press enter to exit."
 } 
+# If the srcipt fails, it will print out the error and also store in a log file
 catch {
   $errorData = $_
   $currentDateTime = Get-Date 
