@@ -3,6 +3,9 @@ Import-Module ActiveDirectory
 
 # Get file path
 $CSVFile = Read-Host "Enter path to .csv file: "
+# Get computername/IP 
+$remoteIP = Read-Host "Enter IP address of remote computer: "
+$credentials = Get-Credentials
 
 # Import file into variable
 # Lets make sure the file path was valid
@@ -15,6 +18,8 @@ if ([System.IO.File]::Exists($CSVFile)) {
     Exit
 }
 
+# Run the remote access command and execute the script
+Invoke-Command -ComputerName $remoteIP -Credential $credentials -ScripBlock {
 try {
 # Lets iterate over each line in the CSV file
   foreach($user in $CSV) {
@@ -22,7 +27,7 @@ try {
       $SecurePassword = ConvertTo-SecureString "$user.'Password'" -AsPlainText -Force
       # Format their username
       $Username = $user.'Username'
-      # Create new user
+      # Create new user - only works when on a Domain Controller!!
       New-ADUser -Name "$($user.'FirstName') $($user.'LastName')" `
                   -GivenName $user.'FirstName' `
                   -Surname $user.'LastName' `
@@ -48,3 +53,5 @@ catch {
   Write-Host "The error has been stored in log file called $logfilename"
   $errorData | Out-File -FilePath "C:\$logfilename"
 }
+}
+
