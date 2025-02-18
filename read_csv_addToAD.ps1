@@ -15,39 +15,38 @@ if ([System.IO.File]::Exists($CSVFile)) {
     Exit
 }
 
+try {
 # Lets iterate over each line in the CSV file
-foreach($user in $CSV) {
+  foreach($user in $CSV) {
 
-    # Password
-    $SecurePassword = ConvertTo-SecureString "$user.'Password'" -AsPlainText -Force
+      # Password
+      $SecurePassword = ConvertTo-SecureString "$user.'Password'" -AsPlainText -Force
 
-    # Format their username
-    $Username = $user.'Username'
+      # Format their username
+      $Username = $user.'Username'
 
-    # Create new user
-    New-ADUser -Name "$($user.'FirstName') $($user.'LastName')" `
-                -GivenName $user.'FirstName' `
-                -Surname $user.'LastName' `
-                -UserPrincipalName $Username `
-                -SamAccountName $Username `
-                -Path "$($user.'OU')" `
-                -ChangePasswordAtLogon $true `
-                -AccountPassword $SecurePassword `
-                -Enabled $([System.Convert]::ToBoolean($user.Enabled))
+      # Create new user
+      New-ADUser -Name "$($user.'FirstName') $($user.'LastName')" `
+                  -GivenName $user.'FirstName' `
+                  -Surname $user.'LastName' `
+                  -UserPrincipalName $Username `
+                  -SamAccountName $Username `
+                  -Path "$($user.'OU')" `
+                  -ChangePasswordAtLogon $true `
+                  -AccountPassword $SecurePassword `
+                  -Enabled $([System.Convert]::ToBoolean($user.Enabled))
 
-    # Write to host that we created a new user
-    Write-Host "Created $Username"
+      # Write to host that we created a new user
+      Write-Host "Created $Username"
+  }
 
-    # If groups is not null... then iterate over groups (if any were specified) and add user to groups
-    if ($User.'Add Groups (csv)' -ne "") {
-        $User.'Add Groups (csv)'.Split(",") | ForEach {
-            Add-ADGroupMember -Identity $_ -Members "$($user.'FirstName').$($user.'LastName')"
-            WriteHost "Added $Username to $_ group" # Log to console
-        }
-    }
-
-    # Write to host that we created the user
-    Write-Host "Created user $Username with groups $($User.'Add Groups (csv)')"
+  Read-Host -Prompt "Script complete... Press enter to exit."
+} 
+catch {
+  $errorData = $_
+  $currentDateTime = Get-Date 
+  $logfilename = "adduserscript_ERROR_$currentDateTime.txt"
+  Write-Host "An error occured: $errorData"
+  Write-Host "The error has been stored in log file called $logfilename"
+  $errorData | Out-File -FilePath "C:\$logfilename"
 }
-
-Read-Host -Prompt "Script complete... Press enter to exit."
