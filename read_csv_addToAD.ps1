@@ -19,7 +19,8 @@ if ([System.IO.File]::Exists($CSVFile)) {
 }
 
 # Run the remote access command and execute the script
-Invoke-Command -ComputerName $remoteIP -Credential $credentials -ScripBlock {
+$Server01SESH = New-PSSession -ComputerName $remoteIP -Credential $credentials
+Enter-PSSession -Session $Server01SESH
 try {
 # Lets iterate over each line in the CSV file
   foreach($user in $CSV) {
@@ -53,5 +54,7 @@ catch {
   Write-Host "The error has been stored in log file called $logfilename"
   $errorData | Out-File -FilePath "C:\$logfilename"
 }
-}
+Exit-PSSession
+Remove-PSSession -Session $Server01SESH
+
 
