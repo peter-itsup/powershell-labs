@@ -19,6 +19,8 @@ if ([System.IO.File]::Exists($CSVFile)) {
 }
 
 # Run the remote access command and execute the script
+# Make sure the remote machine has the following enabeled: 
+# Enable-PSRemoting -Force
 $Server01SESH = New-PSSession -ComputerName $remoteIP -Credential $credentials
 Enter-PSSession -Session $Server01SESH
 try {
