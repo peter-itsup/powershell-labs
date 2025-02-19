@@ -17,9 +17,18 @@ catch {
   Write-Host "Transfer failed"
   $error_data = $_
   Write-Host $error_data
+  Exit
+}
+
+$answer = Read-Host "Transfer complete. Do you want to proceed? [y/n]"
+if ("$answer" -eq "y") {
+  .\addusers.ps1
+} else {
+  Write-Host "Exiting..."
+  Exit
 }
 
 
 # Exit connection to remote computer
-# Exit-PSSession
-# Remove-PSSession -Session $Server01SESH
+Exit-PSSession
+Remove-PSSession -Session $Server01SESH

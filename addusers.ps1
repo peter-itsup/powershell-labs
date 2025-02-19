@@ -2,14 +2,14 @@
 Import-Module ActiveDirectory
 
 # Get file path
-$CSVFile = Read-Host "Enter path to .csv file: "
+# $CSVFile = Read-Host "Enter path to .csv file: "
 
 # Import file into variable
 # Lets make sure the file path was valid
 # If the file path is not valid, then exit the script
 if ([System.IO.File]::Exists($CSVFile)) {
     Write-Host "Importing CSV..."
-    $CSV = Import-Csv -LiteralPath "$CSVFile"
+    $CSV = Import-Csv -LiteralPath ".\users.csv"
 } else {
     Write-Host "File path specified was not valid"
     Exit
