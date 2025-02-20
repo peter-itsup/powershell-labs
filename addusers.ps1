@@ -14,12 +14,19 @@ if ([System.IO.File]::Exists($CSVFile)) {
 
 # Lets iterate over each line in the CSV file
 foreach($user in $CSV) {
-      # Password
+  $userExists = Get-ADuser -Identity $user.username
+  if ($userExists) {
+    Write-Host "($user.username) - User already exists, skipping to next"
+    continue
+  }
   try {
+      # Password
       $SecurePassword = ConvertTo-SecureString "$user.'Password'" -AsPlainText -Force
       # Format their username
       $Username = $user.'Username'
       # Create new user - only works when on a Domain Controller!!
+      # There is an issue with users who have the same FirstName and LastName.
+      # They cause an error in the AD
       New-ADUser -Name "$($user.'FirstName') $($user.'LastName')" `
                   -GivenName $user.'FirstName' `
                   -Surname $user.'LastName' `
