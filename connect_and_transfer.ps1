@@ -8,14 +8,14 @@ $credentials = Get-Credential
 # Start the session and store path variables
 $Server01SESH = New-PSSession -ComputerName $remoteIP -Credential $credentials
 $source_path = Read-Host "Enter local path for directory with .csv file and .ps1 script: "
-$desitnation_path = Read-Host "Enter desitnation path on remote computer: "
+$destination_path = Read-Host "Enter desitnation path on remote computer: "
 
 # Enter the session
-Enter-PSSession $Server01SESH
+Enter-PSSession -Session $Server01SESH
 try {
   # Copy the files to the remote computer in the given directory
-  Copy-Item "$source_path/addusers.ps1" -Destination "$desitnation_path/addusers.ps1" -ToSession $Server01SESH
-  Copy-Item "$source_path/users.csv" -Destination "$desitnation_path/users.csv" -ToSession $Server01SESH
+ Copy-Item (Join-Path $source_path "addusers.ps1") -Destination (Join-Path $destination_path "addusers.ps1") -ToSession $Server01SESH
+    Copy-Item (Join-Path $source_path "users.csv") -Destination (Join-Path $destination_path "users.csv") -ToSession $Server01SESH 
   Write-Host "Files transferred successfully!"
 }
 catch {

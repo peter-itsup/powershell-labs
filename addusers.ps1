@@ -43,7 +43,7 @@ foreach($user in $CSV) {
     $errorData | Out-File -FilePath "C:\$logfilename"
   }
 
-  Read-Host -Prompt "Script complete... Press enter to exit."
+  Write-Host "Script complete..."
 } 
 
 
