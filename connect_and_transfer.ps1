@@ -37,5 +37,12 @@ if ("$answer" -eq "y") {
 
 
 # Exit connection to remote computer
-Exit-PSSession
-Remove-PSSession -Session $Server01SESH
+$userExit = Read-Host "Do you want to exit remote session? [y/n]"
+if ("$userExit" -eq "y") {
+  Exit-PSSession
+  Remove-PSSession -Session $Server01SESH
+}
+else {
+  Write-Host "Closing script, leaving session open"
+  Exit
+}
